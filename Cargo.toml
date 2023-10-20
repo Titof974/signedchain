@@ -1,0 +1,15 @@
+[package]
+name = "hello_world"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rsa = {version = "0.9.2", features =["sha2"]}
+rand = "*"
+sha256 = "1.4.0"
+serde = { version = "1.0.189", features = ["derive"] }
+serde_json = "1.0.107"
+md5 = "0.7.0"
+sha2 = "0.10.8"
