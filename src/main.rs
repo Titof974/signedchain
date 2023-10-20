@@ -2,9 +2,8 @@ pub mod key_manager;
 pub mod block;
 
 use block::Block;
-
 use crate::key_manager::KeyManager;
-use crate::block::BlockMetadata;
+mod block_metadata;
 
 fn main() {
     // let mut rng = rand::thread_rng();
