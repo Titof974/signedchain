@@ -4,9 +4,9 @@ use crate::{block_metadata::BlockMetadata, key_manager::KeyManager};
 
 
 pub struct Block {
-    metadata: BlockMetadata,
-    data: String,
-    signature: Vec<u8>,
+    pub metadata: BlockMetadata,
+    pub data: String,
+    pub signature: Vec<u8>,
 }
 
 impl Block {

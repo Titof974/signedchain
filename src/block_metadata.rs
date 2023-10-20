@@ -8,7 +8,7 @@ pub struct BlockMetadata {
     date: u64,
     previous_hash: String,
     hash_key: String,
-    hash: String,
+    pub hash: String,
 }
 
 impl BlockMetadata {

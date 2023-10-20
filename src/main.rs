@@ -4,6 +4,8 @@ pub mod block;
 use block::Block;
 use crate::key_manager::KeyManager;
 mod block_metadata;
+mod chain;
+use crate::chain::Chain;
 
 fn main() {
     // let mut rng = rand::thread_rng();
@@ -57,9 +59,21 @@ fn main() {
     // kkey.verify("salutosamigos".as_bytes(), s.as_slice());
 
     // ---------------
-    let key: KeyManager = KeyManager::generate();
+    // let key: KeyManager = KeyManager::generate();
+    // let key2 = KeyManager::generate();
+    // let block = Block::new(0, "", key.clone(), "{'h': 12}");
+    // println!("{:?}", block);
+    // block.verify(key2.clone()).unwrap();
+
+
+    // ----------------
+    let key = KeyManager::generate();
     let key2 = KeyManager::generate();
-    let block = Block::new(0, "", key.clone(), "{'h': 12}");
-    println!("{:?}", block);
-    block.verify(key2.clone()).unwrap();
+
+    let mut chain = Chain::new();
+    chain.add_block("{}", key.clone());
+    chain.add_block("{1}", key2.clone());
+    chain.verify_with_keys(vec![key.clone(), key.clone()]).unwrap();
+    println!("{:?}", chain);
+
 }
