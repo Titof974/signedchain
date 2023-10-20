@@ -20,9 +20,12 @@ impl Block {
         }
     }
 
-    pub fn verify(&self, key_manager: KeyManager) {
+    pub fn verify(&self, key_manager: KeyManager) -> Result<(), String> {
         let metadata_json = self.metadata.to_json();
-        key_manager.verify(metadata_json.as_bytes(), &self.signature)
+        match key_manager.verify(metadata_json.as_bytes(), &self.signature) {
+            Ok(()) => Ok(()),
+            Err(_err) => Err(format!("Can't validate block {}", metadata_json))
+        }
     }
 }
 

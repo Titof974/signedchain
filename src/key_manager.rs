@@ -120,7 +120,7 @@ impl KeyManager {
         .expect("Can't sign data")
     }
 
-    pub fn verify(&self, data: &[u8], signature: &[u8]) {
+    pub fn verify(&self, data: &[u8], signature: &[u8]) -> Result<(), rsa::Error> {
         RsaPublicKey::from_public_key_pem(
             String::from_utf8(self.public_key.clone()).unwrap().as_str(),
         )
@@ -130,7 +130,6 @@ impl KeyManager {
             &Sha256::digest(data),
             signature,
         )
-        .expect("Can't verify data");
     }
 
     pub fn private_key_hash(&self) -> String {
