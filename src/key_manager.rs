@@ -7,6 +7,7 @@ use sha256::digest;
 use std::io::{Error, Write};
 use std::{fs::File, io::Read};
 
+#[derive(Clone)]
 pub struct KeyManager {
     private_key: Vec<u8>,
     public_key: Vec<u8>,
@@ -105,7 +106,7 @@ impl KeyManager {
         }
     }
 
-    pub fn sign(&self, data: &str) -> Vec<u8> {
+    pub fn sign(&self, data: &[u8]) -> Vec<u8> {
         RsaPrivateKey::from_pkcs8_pem(
             String::from_utf8(self.private_key.clone())
                 .unwrap()
@@ -114,7 +115,7 @@ impl KeyManager {
         .unwrap()
         .sign(
             Pkcs1v15Sign::new::<sha2::Sha256>(),
-            &Sha256::digest(data.as_bytes()),
+            &Sha256::digest(data),
         )
         .expect("Can't sign data")
     }

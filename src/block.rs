@@ -16,8 +16,13 @@ impl Block {
         Block {
             metadata,
             data: data.to_string(),
-            signature: key_manager.sign(metadata_json.as_str()),
+            signature: key_manager.sign(metadata_json.as_bytes()),
         }
+    }
+
+    pub fn verify(&self, key_manager: KeyManager) {
+        let metadata_json = self.metadata.to_json();
+        key_manager.verify(metadata_json.as_bytes(), &self.signature)
     }
 }
 

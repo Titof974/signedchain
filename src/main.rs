@@ -58,6 +58,8 @@ fn main() {
 
     // ---------------
     let key: KeyManager = KeyManager::generate();
-    let block = Block::new(0, "", key, "{'h': 12}");
+    let key2 = KeyManager::generate();
+    let block = Block::new(0, "", key.clone(), "{'h': 12}");
     println!("{:?}", block);
+    block.verify(key2.clone());
 }
