@@ -38,7 +38,7 @@ impl Chain {
         self.blocks.push(block);
     }
 
-    /// Verify all blocks in the chain with a list of keys
+    /// Verify all block signatures in the chain with a list of keys
     /// 
     /// # Examples
     /// 
@@ -55,7 +55,7 @@ impl Chain {
         for block in self.blocks.iter() {
             let mut trusted = false;
             for key in keys.iter() {
-                match block.verify(key.clone()) {
+                match block.verify_signature(key.clone()) {
                     Ok(()) => {
                         trusted = true;
                         break;
@@ -64,14 +64,34 @@ impl Chain {
                 }
             }
             if !trusted {
-                panic!("Can't verify block {}", block.metadata.to_json());
+                panic!("Can't verify signature of block {}", block.metadata.to_json());
             }
         }
         Ok(())
     }
 
-    pub fn verify_with_hashes(&self) {
-        todo!("Verify the chain with hashes")
+    /// Verify all block hashes in the chain
+    /// 
+    /// # Examples
+    /// 
+    /// ```
+    /// let km1 = KeyManager::generate();
+    /// let km2 = KeyManager::generate();
+    /// let mut chain = Chain::new();
+    /// chain.add_block("random data", km1);
+    /// chain.add_block("random data2", km2);
+    /// 
+    /// chain.verify_with_hashes(keys).unwrap();
+    /// ```
+    pub fn verify_with_hashes(&self) -> Result {
+        #[allow(clippy::never_loop)]
+        for block in self.blocks.iter() {
+            match block.verify_hash() {
+                Ok(()) => {}
+                Err(err) => panic!("{}", err),
+            }
+        }
+        Ok(())
     }
 }
 

@@ -1,7 +1,9 @@
-use std::{fmt, time::{UNIX_EPOCH, SystemTime}};
+use std::{
+    fmt,
+    time::{SystemTime, UNIX_EPOCH},
+};
 
 use crate::{block_metadata::BlockMetadata, key_manager::KeyManager};
-
 
 pub struct Block {
     pub metadata: BlockMetadata,
@@ -11,7 +13,16 @@ pub struct Block {
 
 impl Block {
     pub fn new(id: i32, previous_hash: &str, key_manager: KeyManager, data: &str) -> Block {
-        let metadata = BlockMetadata::new(id, SystemTime::now().duration_since(UNIX_EPOCH).expect("Can't retrieve time for generate block").as_secs(), previous_hash, key_manager.public_key_hash().as_str(), data);
+        let metadata = BlockMetadata::new(
+            id,
+            SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .expect("Can't retrieve time for generate block")
+                .as_secs(),
+            previous_hash,
+            key_manager.public_key_hash().as_str(),
+            data,
+        );
         let metadata_json = metadata.to_json();
         Block {
             metadata,
@@ -20,11 +31,22 @@ impl Block {
         }
     }
 
-    pub fn verify(&self, key_manager: KeyManager) -> Result<(), String> {
+    pub fn verify_signature(&self, key_manager: KeyManager) -> Result<(), String> {
         let metadata_json = self.metadata.to_json();
         match key_manager.verify(metadata_json.as_bytes(), &self.signature) {
             Ok(()) => Ok(()),
-            Err(_err) => Err(format!("Can't validate block {}", metadata_json))
+            Err(_err) => Err(format!(
+                "Can't validate signature of block {}",
+                metadata_json
+            )),
+        }
+    }
+
+    pub fn verify_hash(&self) -> Result<(), String> {
+        let metadata_json = self.metadata.to_json();
+        match self.metadata.hash == self.metadata.generate_hash(&self.data) {
+            true => Ok(()),
+            false => Err(format!("Can't validate hash of block {}", metadata_json)),
         }
     }
 }
@@ -34,7 +56,9 @@ impl fmt::Debug for Block {
         write!(
             f,
             "metadata: {}, data: {}, signature: {:?}",
-            self.metadata.to_json(), self.data, self.signature
+            self.metadata.to_json(),
+            self.data,
+            self.signature
         )
     }
 }

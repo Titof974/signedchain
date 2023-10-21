@@ -4,10 +4,10 @@ use serde_json::json;
 use sha256::digest;
 
 pub struct BlockMetadata {
-    id: i32,
-    date: u64,
-    previous_hash: String,
-    hash_key: String,
+    pub id: i32,
+    pub date: u64,
+    pub previous_hash: String,
+    pub hash_key: String,
     pub hash: String,
 }
 
@@ -24,11 +24,15 @@ impl BlockMetadata {
             date,
             previous_hash: String::from(previous_hash),
             hash_key: String::from(hash_key),
-            hash: BlockMetadata::generate_hash(id, date, previous_hash, hash_key, data),
+            hash: BlockMetadata::_generate_hash(id, date, previous_hash, hash_key, data),
         }
     }
 
-    pub fn generate_hash(
+    pub fn generate_hash(&self, data: &str) -> String {
+        BlockMetadata::_generate_hash(self.id, self.date, &self.previous_hash, &self.hash_key, data)
+    }
+
+    fn _generate_hash(
         id: i32,
         date: u64,
         previous_hash: &str,
