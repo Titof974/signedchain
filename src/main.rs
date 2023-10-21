@@ -73,6 +73,7 @@ fn main() {
     let mut chain = Chain::new();
     chain.add_block("{}", key.clone());
     chain.add_block("{1}", key2.clone());
+    chain.verify_chronological_order().unwrap();
     chain.verify_with_hashes().unwrap();
     chain.verify_with_keys(vec![key.clone(), key2.clone()]).unwrap();
     println!("{:?}", chain);

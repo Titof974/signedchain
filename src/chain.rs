@@ -93,6 +93,26 @@ impl Chain {
         }
         Ok(())
     }
+
+    /// Verify all block are ordered chronologically in the chain
+    /// 
+    /// # Examples
+    /// 
+    /// ```
+    /// let km1 = KeyManager::generate();
+    /// let km2 = KeyManager::generate();
+    /// let mut chain = Chain::new();
+    /// chain.add_block("random data", km1);
+    /// chain.add_block("random data2", km2);
+    /// 
+    /// chain.verify_chronological_order().unwrap();
+    /// ```
+    pub fn verify_chronological_order(&self) -> Result {
+        match self.blocks.windows(2).all(|blocks| blocks[0].metadata.date < blocks[1].metadata.date) {
+            true => Ok(()),
+            false => panic!("Chain blocks are not ordered")
+        }
+    }
 }
 
 impl fmt::Debug for Chain {
